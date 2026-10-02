@@ -10,14 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  FormPanel,
+  FormPanelBody,
+  FormPanelContent,
+  FormPanelDescription,
+  FormPanelFooter,
+  FormPanelHeader,
+  FormPanelTitle,
+  FormPanelTrigger,
+} from "@/components/ui/form-panel";
 import {
   Select,
   SelectContent,
@@ -57,22 +58,21 @@ export function SetRateDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <FormPanel open={open} onOpenChange={setOpen}>
+      <FormPanelTrigger asChild>
         <Button variant="outline" size="sm">
           <Plus />
           Set rate
         </Button>
-      </DialogTrigger>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Exchange rate</DialogTitle>
-          <DialogDescription>
+      </FormPanelTrigger>
+      <FormPanelContent>
+        <FormPanelHeader>
+          <FormPanelTitle>Exchange rate</FormPanelTitle>
+          <FormPanelDescription>
             How many {baseCurrency} equal one unit of the other currency.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
+          </FormPanelDescription>
+        </FormPanelHeader>
+        <FormPanelBody className="space-y-4">
           <Field label="Currency">
             <Select value={currency} onValueChange={setCurrency}>
               <SelectTrigger className="w-full">
@@ -103,9 +103,8 @@ export function SetRateDialog({
               placeholder="e.g. 1500"
             />
           </Field>
-        </div>
-
-        <DialogFooter>
+        </FormPanelBody>
+        <FormPanelFooter>
           <Button
             type="button"
             variant="outline"
@@ -116,8 +115,8 @@ export function SetRateDialog({
           <Button type="button" onClick={() => void submit()}>
             Save rate
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </FormPanelFooter>
+      </FormPanelContent>
+    </FormPanel>
   );
 }

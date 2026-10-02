@@ -27,12 +27,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  FormPanel,
+  FormPanelBody,
+  FormPanelContent,
+  FormPanelDescription,
+  FormPanelFooter,
+  FormPanelHeader,
+  FormPanelTitle,
+} from "@/components/ui/form-panel";
 import {
   Select,
   SelectContent,
@@ -322,31 +324,11 @@ export function QuickAddSheet({ tabs, onClose }: QuickAddSheetProps) {
       : null;
 
   return (
-    <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-      <SheetContent
-        side="bottom"
-        showCloseButton={false}
-        className="mx-auto max-h-[94dvh] w-full gap-0 overflow-hidden rounded-t-3xl border-border bg-background p-0 sm:max-w-xl"
-      >
-        <SheetHeader className="shrink-0 gap-3 border-b border-border bg-card px-5 pt-5 pb-4">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <SheetTitle className="font-[family-name:var(--font-display)] text-xl text-foreground">
-                {heading.title}
-              </SheetTitle>
-              <SheetDescription>{heading.description}</SheetDescription>
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="-mt-1"
-            >
-              Cancel
-            </Button>
-          </div>
-
+    <FormPanel open={open} onOpenChange={(v) => !v && onClose()}>
+      <FormPanelContent>
+        <FormPanelHeader className="gap-3">
+          <FormPanelTitle>{heading.title}</FormPanelTitle>
+          <FormPanelDescription>{heading.description}</FormPanelDescription>
           {scope.length > 1 && (
             <SegmentedControl
               value={activeTab}
@@ -360,9 +342,9 @@ export function QuickAddSheet({ tabs, onClose }: QuickAddSheetProps) {
               }}
             />
           )}
-        </SheetHeader>
+        </FormPanelHeader>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5">
+        <FormPanelBody>
           <div className="space-y-5">
             {activeTab === "task" && (
               <>
@@ -376,7 +358,7 @@ export function QuickAddSheet({ tabs, onClose }: QuickAddSheetProps) {
                   />
                 </Field>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <Field label="Date" htmlFor="qa-date">
                     <Input
                       id="qa-date"
@@ -515,7 +497,7 @@ export function QuickAddSheet({ tabs, onClose }: QuickAddSheetProps) {
 
             {activeTab === "health" && (
               <>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <button
                     type="button"
                     onClick={() => setHealthType("water")}
@@ -602,23 +584,22 @@ export function QuickAddSheet({ tabs, onClose }: QuickAddSheetProps) {
               </p>
             )}
           </div>
-        </div>
+        </FormPanelBody>
 
         {!(isMoney && hasNoAccounts) && (
-          <div className="shrink-0 border-t border-border bg-card px-5 py-4">
+          <FormPanelFooter className="sm:[&_button]:w-full">
             <Button
               type="button"
               size="lg"
               disabled={saving}
               onClick={() => void handleSave()}
-              className="w-full"
             >
               {saving ? "Saving…" : "Save"}
             </Button>
-          </div>
+          </FormPanelFooter>
         )}
-      </SheetContent>
-    </Sheet>
+      </FormPanelContent>
+    </FormPanel>
   );
 }
 

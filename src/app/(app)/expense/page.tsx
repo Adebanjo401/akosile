@@ -39,13 +39,14 @@ import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import { SegmentedControl } from "@/components/SegmentedControl";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  FormPanel,
+  FormPanelBody,
+  FormPanelContent,
+  FormPanelDescription,
+  FormPanelFooter,
+  FormPanelHeader,
+  FormPanelTitle,
+} from "@/components/ui/form-panel";
 import {
   Select,
   SelectContent,
@@ -605,15 +606,15 @@ function AddItemDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Add expense item</DialogTitle>
-          <DialogDescription>
+    <FormPanel open={open} onOpenChange={onOpenChange}>
+      <FormPanelContent>
+        <FormPanelHeader>
+          <FormPanelTitle>Add expense item</FormPanelTitle>
+          <FormPanelDescription>
             Planned spend — groceries, a repair, or anything else.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
+          </FormPanelDescription>
+        </FormPanelHeader>
+        <FormPanelBody className="space-y-4">
           <Field label="What is it?" htmlFor="expense-title" error={error}>
             <Input
               id="expense-title"
@@ -622,7 +623,7 @@ function AddItemDialog({
               placeholder="e.g. 5kg rice, leaking tap"
             />
           </Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Kind">
               <Select
                 value={kind}
@@ -681,8 +682,8 @@ function AddItemDialog({
               placeholder="0"
             />
           </Field>
-        </div>
-        <DialogFooter>
+        </FormPanelBody>
+        <FormPanelFooter>
           <Button
             type="button"
             variant="outline"
@@ -693,9 +694,9 @@ function AddItemDialog({
           <Button type="button" onClick={() => void submit()}>
             Save item
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </FormPanelFooter>
+      </FormPanelContent>
+    </FormPanel>
   );
 }
 
@@ -767,86 +768,88 @@ function CompleteItemDialog({
     estimate && actualMinor != null ? actualMinor - estimate : null;
 
   return (
-    <Dialog open={item != null} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Mark as paid</DialogTitle>
-          <DialogDescription>
+    <FormPanel open={item != null} onOpenChange={(v) => !v && onClose()}>
+      <FormPanelContent>
+        <FormPanelHeader>
+          <FormPanelTitle>Mark as paid</FormPanelTitle>
+          <FormPanelDescription>
             {item?.title}. Logged to Money unless you turn that off.
-          </DialogDescription>
-        </DialogHeader>
-        <label className="flex items-center gap-3 rounded-2xl border border-border px-4 py-3 text-sm">
-          <input
-            type="checkbox"
-            checked={logExpense}
-            onChange={(e) => setLogExpense(e.target.checked)}
-            className="size-4 accent-[var(--akosile-primary)]"
-          />
-          Log this as a spend in Money
-        </label>
-        {logExpense && (
-          <div className="space-y-3">
-            <Field label="Amount" htmlFor="expense-cost">
-              <Input
-                id="expense-cost"
-                inputMode="decimal"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-              />
-            </Field>
-            {variance != null && variance !== 0 && item?.currency && (
-              <p className="text-xs text-muted-foreground">
-                {variance > 0 ? "Over estimate by " : "Under estimate by "}
-                {formatMoney(Math.abs(variance), item.currency)}
-              </p>
-            )}
-            <Field label="Account">
-              <Select
-                value={accountId || accounts?.[0]?.id || ""}
-                onValueChange={setAccountId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Choose account" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(accounts ?? []).map((a) => (
-                    <SelectItem key={a.id} value={a.id}>
-                      {a.name} · {a.currency}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-            <Field label="Category" optional>
-              <Select
-                value={categoryId || "none"}
-                onValueChange={(v) => setCategoryId(v === "none" ? "" : v)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Uncategorised</SelectItem>
-                  {categories.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
-        )}
-        <DialogFooter>
+          </FormPanelDescription>
+        </FormPanelHeader>
+        <FormPanelBody className="space-y-4">
+          <label className="flex items-center gap-3 rounded-2xl border border-border px-4 py-3 text-sm">
+            <input
+              type="checkbox"
+              checked={logExpense}
+              onChange={(e) => setLogExpense(e.target.checked)}
+              className="size-4 accent-[var(--akosile-primary)]"
+            />
+            Log this as a spend in Money
+          </label>
+          {logExpense && (
+            <div className="space-y-3">
+              <Field label="Amount" htmlFor="expense-cost">
+                <Input
+                  id="expense-cost"
+                  inputMode="decimal"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                />
+              </Field>
+              {variance != null && variance !== 0 && item?.currency && (
+                <p className="text-xs text-muted-foreground">
+                  {variance > 0 ? "Over estimate by " : "Under estimate by "}
+                  {formatMoney(Math.abs(variance), item.currency)}
+                </p>
+              )}
+              <Field label="Account">
+                <Select
+                  value={accountId || accounts?.[0]?.id || ""}
+                  onValueChange={setAccountId}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Choose account" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(accounts ?? []).map((a) => (
+                      <SelectItem key={a.id} value={a.id}>
+                        {a.name} · {a.currency}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field label="Category" optional>
+                <Select
+                  value={categoryId || "none"}
+                  onValueChange={(v) => setCategoryId(v === "none" ? "" : v)}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">Uncategorised</SelectItem>
+                    {categories.map((c) => (
+                      <SelectItem key={c.id} value={c.id}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </div>
+          )}
+        </FormPanelBody>
+        <FormPanelFooter>
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button type="button" onClick={() => void submit()}>
             Paid
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </FormPanelFooter>
+      </FormPanelContent>
+    </FormPanel>
   );
 }
 
@@ -871,60 +874,62 @@ function MatchItemDialog({
   }, [item, unmatched]);
 
   return (
-    <Dialog open={item != null} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Match to a spend</DialogTitle>
-          <DialogDescription>
+    <FormPanel open={item != null} onOpenChange={(v) => !v && onClose()}>
+      <FormPanelContent>
+        <FormPanelHeader>
+          <FormPanelTitle>Match to a spend</FormPanelTitle>
+          <FormPanelDescription>
             Link {item?.title} to a Money transaction from this month.
-          </DialogDescription>
-        </DialogHeader>
-        {ranked.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            No unmatched spends this month. Log one in Money, or use Paid.
-          </p>
-        ) : (
-          <ul className="max-h-72 space-y-2 overflow-y-auto">
-            {ranked.map(({ tx, score }) => (
-              <li key={tx.id}>
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-left hover:border-primary/40"
-                  onClick={() =>
-                    void linkItemToTransaction({
-                      userId,
-                      itemId: item!.id,
-                      transactionId: tx.id,
-                    }).then(() => {
-                      toast.success("Matched to Money");
-                      onClose();
-                    })
-                  }
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-medium">
-                      {tx.note || "Spend"}
+          </FormPanelDescription>
+        </FormPanelHeader>
+        <FormPanelBody>
+          {ranked.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No unmatched spends this month. Log one in Money, or use Paid.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {ranked.map(({ tx, score }) => (
+                <li key={tx.id}>
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between gap-3 rounded-2xl border border-border px-4 py-3 text-left hover:border-primary/40"
+                    onClick={() =>
+                      void linkItemToTransaction({
+                        userId,
+                        itemId: item!.id,
+                        transactionId: tx.id,
+                      }).then(() => {
+                        toast.success("Matched to Money");
+                        onClose();
+                      })
+                    }
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-medium">
+                        {tx.note || "Spend"}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {tx.date}
+                        {score >= 40 ? " · likely match" : ""}
+                      </span>
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {tx.date}
-                      {score >= 40 ? " · likely match" : ""}
+                    <span className="shrink-0 font-mono text-sm tabular-nums">
+                      {formatMoney(tx.amountMinor, tx.currency, locale)}
                     </span>
-                  </span>
-                  <span className="shrink-0 font-mono text-sm tabular-nums">
-                    {formatMoney(tx.amountMinor, tx.currency, locale)}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <DialogFooter>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </FormPanelBody>
+        <FormPanelFooter>
           <Button type="button" variant="outline" onClick={onClose}>
             Close
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </FormPanelFooter>
+      </FormPanelContent>
+    </FormPanel>
   );
 }
 
@@ -976,33 +981,35 @@ function SetBudgetDialog({
   }
 
   return (
-    <Dialog open={category != null} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>{category?.name} budget</DialogTitle>
-          <DialogDescription>
+    <FormPanel open={category != null} onOpenChange={(v) => !v && onClose()}>
+      <FormPanelContent>
+        <FormPanelHeader>
+          <FormPanelTitle>{category?.name} budget</FormPanelTitle>
+          <FormPanelDescription>
             Monthly cap in {currency}. Spent so far:{" "}
             {formatMoney(spent, currency, locale)}.
-          </DialogDescription>
-        </DialogHeader>
-        <Field label="Amount" htmlFor="budget-amount">
-          <Input
-            id="budget-amount"
-            inputMode="decimal"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0"
-          />
-        </Field>
-        <DialogFooter>
+          </FormPanelDescription>
+        </FormPanelHeader>
+        <FormPanelBody>
+          <Field label="Amount" htmlFor="budget-amount">
+            <Input
+              id="budget-amount"
+              inputMode="decimal"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0"
+            />
+          </Field>
+        </FormPanelBody>
+        <FormPanelFooter>
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
           <Button type="button" onClick={() => void submit()}>
             Save budget
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </FormPanelFooter>
+      </FormPanelContent>
+    </FormPanel>
   );
 }

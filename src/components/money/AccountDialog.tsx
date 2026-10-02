@@ -10,14 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field } from "@/components/ui/field";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  FormPanel,
+  FormPanelBody,
+  FormPanelContent,
+  FormPanelDescription,
+  FormPanelFooter,
+  FormPanelHeader,
+  FormPanelTitle,
+  FormPanelTrigger,
+} from "@/components/ui/form-panel";
 import {
   Select,
   SelectContent,
@@ -73,22 +74,21 @@ export function AddAccountDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <FormPanel open={open} onOpenChange={setOpen}>
+      <FormPanelTrigger asChild>
         <Button variant="outline" size="sm">
           <Plus />
           Add account
         </Button>
-      </DialogTrigger>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>New account</DialogTitle>
-          <DialogDescription>
+      </FormPanelTrigger>
+      <FormPanelContent>
+        <FormPanelHeader>
+          <FormPanelTitle>New account</FormPanelTitle>
+          <FormPanelDescription>
             Each account holds one currency. Spending is logged against these.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
+          </FormPanelDescription>
+        </FormPanelHeader>
+        <FormPanelBody className="space-y-4">
           <Field label="Name" htmlFor="acct-name" error={error}>
             <Input
               id="acct-name"
@@ -97,7 +97,7 @@ export function AddAccountDialog({
               placeholder="e.g. GTBank current"
             />
           </Field>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Type">
               <Select
                 value={type}
@@ -138,9 +138,8 @@ export function AddAccountDialog({
               onChange={(e) => setOpening(e.target.value)}
             />
           </Field>
-        </div>
-
-        <DialogFooter>
+        </FormPanelBody>
+        <FormPanelFooter>
           <Button
             type="button"
             variant="outline"
@@ -151,8 +150,8 @@ export function AddAccountDialog({
           <Button type="button" onClick={() => void submit()}>
             Save account
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </FormPanelFooter>
+      </FormPanelContent>
+    </FormPanel>
   );
 }
