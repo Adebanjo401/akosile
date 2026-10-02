@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Akosile
 
-## Getting Started
+Personal life desk for money, health, schedule and reminders — as a web app and installable PWA, with offline support and Supabase sync.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router) + TypeScript + Tailwind CSS
+- IndexedDB via Dexie (local-first)
+- Outbox sync to Supabase (Auth + Postgres + RLS)
+- PWA via `@ducanh2912/next-pwa`
+
+## Quick start
 
 ```bash
+cd ~/projects/personal/akosile
+cp .env.local.example .env.local
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Without Supabase credentials the app runs **local-only** (data stays in the browser). That is enough to try Today, quick-add, money, tasks and health.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Enable cloud sync
 
-## Learn More
+1. Create a project at [supabase.com](https://supabase.com).
+2. Put the URL and publishable key in `.env.local` (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`).
+3. Run the SQL in `supabase/migrations/` in order (`001`, `002`, `003`) in the Supabase SQL editor.
+4. Enable Email auth (magic link) in Supabase Auth settings.
+5. Sign in from **More → Sign in to sync**.
 
-To learn more about Next.js, take a look at the following resources:
+## MVP features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Onboarding (name, base currency, modules)
+- Today dashboard (overdue/due tasks, money snapshot, water/sleep)
+- Persistent quick-add (task, spent, received, health)
+- Schedule list with recurrence (daily/weekly/monthly/yearly)
+- Accounts, transactions, manual FX rates, cross-currency aware totals
+- Categories with defaults, archive, inline create
+- Missed reminders list
+- Export JSON/CSV; delete local data
+- Offline badge + outbox sync when online
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Admin
 
-## Deploy on Vercel
+No admin UI in MVP. Profiles include a `role` field (`user` | `admin`) for a future admin console. RLS keeps each user on their own rows.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Command | Description |
+|---|---|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build |
+| `npm run lint` | ESLint |
