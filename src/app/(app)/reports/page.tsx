@@ -153,16 +153,9 @@ export default function ReportsPage() {
   }, 0);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 px-4 py-6 md:px-8 md:py-8">
+    <div className="space-y-8">
       <header className="space-y-4">
-        <div className="hidden md:block">
-          <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
-            Reports
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {profile.name}&apos;s picture across money, expenses, schedule and health.
-          </p>
-        </div>
+        <h1 className="sr-only">Reports</h1>
         <SegmentedControl
           value={period}
           onChange={setPeriod}

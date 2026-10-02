@@ -76,16 +76,9 @@ export default function SchedulePage() {
   }, [visible, filter]);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 md:px-8 md:py-8">
+    <div className="space-y-6">
       <header className="flex items-start justify-between gap-4">
-        <div className="hidden md:block">
-          <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
-            Schedule
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Everything you have planned, grouped by day.
-          </p>
-        </div>
+        <h1 className="sr-only">Schedule</h1>
         <Button
           type="button"
           onClick={() => quickAdd.open(["task"])}

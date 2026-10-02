@@ -173,7 +173,7 @@ export default function TodayPage() {
   const homeCount = householdNeeded?.length ?? 0;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 px-4 py-6 md:px-8 md:py-8">
+    <div className="space-y-8">
       <header>
         <p className="text-sm text-muted-foreground">
           {format(new Date(), "EEEE, d MMMM")}

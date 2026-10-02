@@ -78,15 +78,8 @@ export default function HealthPage() {
   );
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 md:px-8 md:py-8">
-      <header className="hidden md:block">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
-          Health
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Water, sleep, workouts and meals for today.
-        </p>
-      </header>
+    <div className="space-y-6">
+      <h1 className="sr-only">Health</h1>
 
       <p className="rounded-2xl bg-secondary px-4 py-3 text-xs text-muted-foreground">
         Akosile is a tracking tool and does not give medical advice. Health data

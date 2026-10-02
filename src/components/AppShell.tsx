@@ -15,6 +15,8 @@ import {
 import { cn } from "@/lib/utils";
 import { useApp } from "@/lib/app-context";
 
+const GUTTER = "px-4 sm:px-6 lg:px-8";
+
 const PRIMARY_NAV = [
   {
     href: "/today",
@@ -67,8 +69,19 @@ const SETTINGS_NAV = {
   icon: Settings2,
 } as const;
 
+type NavItem = {
+  href: string;
+  label: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+};
+
 interface AppShellProps {
   children: React.ReactNode;
+}
+
+function isActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export function AppShell({ children }: AppShellProps) {
@@ -81,29 +94,84 @@ export function AppShell({ children }: AppShellProps) {
   });
 
   const current =
-    [...primary, REPORTS_NAV, SETTINGS_NAV].find(
-      (item) => pathname === item.href || pathname.startsWith(`${item.href}/`),
+    [...primary, REPORTS_NAV, SETTINGS_NAV].find((item) =>
+      isActive(pathname, item.href),
     ) ?? primary[0];
 
-  const settingsActive =
-    pathname === SETTINGS_NAV.href || pathname.startsWith(`${SETTINGS_NAV.href}/`);
-  const reportsActive =
-    pathname === REPORTS_NAV.href || pathname.startsWith(`${REPORTS_NAV.href}/`);
+  const settingsActive = isActive(pathname, SETTINGS_NAV.href);
+  const reportsActive = isActive(pathname, REPORTS_NAV.href);
 
   return (
-    <div className="min-h-dvh bg-background text-foreground">
-      <div className="mx-auto flex min-h-dvh max-w-6xl">
-        <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-border bg-card px-4 py-6 md:flex">
-          <Link href="/today" className="mb-6 block px-2">
-            <p className="font-[family-name:var(--font-display)] text-2xl font-semibold tracking-tight text-primary">
+    <div className="flex min-h-dvh flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/80 backdrop-blur-xl">
+        <div
+          className={cn(
+            GUTTER,
+            "flex h-14 items-center justify-between gap-4 lg:h-16",
+          )}
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <Link
+              href="/today"
+              className="shrink-0 font-[family-name:var(--font-display)] text-lg font-semibold tracking-tight text-primary lg:text-xl"
+            >
               Akosile
-            </p>
-            <p className="mt-0.5 truncate text-xs text-muted-foreground">
-              {profile?.name ? `${profile.name}'s day` : "Your day"}
-            </p>
-          </Link>
+            </Link>
+            <span className="hidden h-5 w-px bg-border sm:block" aria-hidden />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-foreground">
+                {current.label}
+              </p>
+              <p className="hidden truncate text-xs text-muted-foreground lg:block">
+                {current.description}
+              </p>
+            </div>
+          </div>
 
-          <nav className="flex flex-1 flex-col gap-1">
+          <div className="flex shrink-0 items-center gap-1.5">
+            {!online && (
+              <span className="flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                <WifiOff className="size-3.5" />
+                <span className="hidden sm:inline">Offline</span>
+              </span>
+            )}
+            <Link
+              href={REPORTS_NAV.href}
+              aria-label="Reports"
+              aria-current={reportsActive ? "page" : undefined}
+              className={cn(
+                "flex size-9 items-center justify-center rounded-full transition-colors lg:hidden",
+                reportsActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              )}
+            >
+              <ChartNoAxesCombined className="size-4" />
+            </Link>
+            <Link
+              href={SETTINGS_NAV.href}
+              aria-label="Settings"
+              aria-current={settingsActive ? "page" : undefined}
+              className={cn(
+                "flex size-9 items-center justify-center rounded-full transition-colors",
+                settingsActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+              )}
+            >
+              <Settings2 className="size-4" />
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <div className="flex min-h-0 flex-1">
+        <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-64 shrink-0 flex-col border-r border-border bg-card px-4 py-5 lg:flex lg:top-16 lg:h-[calc(100dvh-4rem)]">
+          <p className="mb-4 truncate px-2 text-xs text-muted-foreground">
+            {profile?.name ? `${profile.name}'s day` : "Your day"}
+          </p>
+
+          <nav aria-label="Sidebar" className="flex flex-1 flex-col gap-1">
             {primary.map((item) => (
               <SidebarLink key={item.href} item={item} pathname={pathname} />
             ))}
@@ -121,57 +189,12 @@ export function AppShell({ children }: AppShellProps) {
           )}
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-border bg-background/90 px-4 py-3 backdrop-blur md:hidden">
-            <div className="min-w-0">
-              <p className="font-[family-name:var(--font-display)] text-lg font-semibold text-primary">
-                {current.label}
-              </p>
-              <p className="truncate text-xs text-muted-foreground">
-                {current.description}
-              </p>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
-              {!online && (
-                <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-muted-foreground">
-                  <WifiOff className="size-3.5" />
-                  Offline
-                </span>
-              )}
-              <Link
-                href={REPORTS_NAV.href}
-                aria-label="Reports"
-                aria-current={reportsActive ? "page" : undefined}
-                className={cn(
-                  "flex size-11 items-center justify-center rounded-full border transition-colors",
-                  reportsActive
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-card text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <ChartNoAxesCombined className="size-4" />
-              </Link>
-              <Link
-                href={SETTINGS_NAV.href}
-                aria-label="Settings"
-                aria-current={settingsActive ? "page" : undefined}
-                className={cn(
-                  "flex size-11 items-center justify-center rounded-full border transition-colors",
-                  settingsActive
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-card text-muted-foreground hover:text-foreground",
-                )}
-              >
-                <Settings2 className="size-4" />
-              </Link>
-            </div>
-          </header>
-
-          <main className="flex-1 pb-24 md:pb-10">{children}</main>
-        </div>
+        <main className={cn(GUTTER, "min-w-0 flex-1 py-6 pb-24 lg:py-8 lg:pb-10")}>
+          {children}
+        </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
         <ul className="mx-auto flex max-w-lg items-stretch">
           {primary.map((item) => (
             <MobileNavItem key={item.href} item={item} pathname={pathname} />
@@ -186,15 +209,10 @@ function SidebarLink({
   item,
   pathname,
 }: {
-  item: {
-    href: string;
-    label: string;
-    description: string;
-    icon: React.ComponentType<{ className?: string }>;
-  };
+  item: NavItem;
   pathname: string;
 }) {
-  const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+  const active = isActive(pathname, item.href);
   const Icon = item.icon;
 
   return (
@@ -234,8 +252,7 @@ function MobileNavItem({
   item: (typeof PRIMARY_NAV)[number];
   pathname: string;
 }) {
-  const active =
-    pathname === item.href || pathname.startsWith(`${item.href}/`);
+  const active = isActive(pathname, item.href);
   const Icon = item.icon;
 
   return (

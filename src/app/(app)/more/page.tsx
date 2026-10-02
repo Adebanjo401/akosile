@@ -165,15 +165,8 @@ export default function MorePage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 py-6 md:px-8 md:py-8">
-      <header className="hidden md:block">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold">
-          Settings
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Profile, accounts, rates, categories and data.
-        </p>
-      </header>
+    <div className="space-y-6">
+      <h1 className="sr-only">Settings</h1>
 
       <Section title="Profile">
         <Field label="Name" htmlFor="name">

@@ -134,16 +134,9 @@ export default function MoneyPage() {
   const base = profile.baseCurrency;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8 px-4 py-6 md:px-8 md:py-8">
+    <div className="space-y-8">
       <header className="flex items-start justify-between gap-4">
-        <div className="hidden md:block">
-          <h1 className="font-[family-name:var(--font-display)] text-3xl font-semibold text-foreground">
-            Money
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Spending, insights and balances.
-          </p>
-        </div>
+        <h1 className="sr-only">Money</h1>
         <div className="ml-auto flex gap-2">
           <Button type="button" onClick={() => quickAdd.open(["spent"])}>
             <ArrowUpRight />
